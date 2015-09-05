@@ -68,10 +68,17 @@ class Heimdall
           return 0
         end
 
-        # TODO: and error handling testing
+        # TODO: This particularly needs testing
+        def self.approximate_compare_versions(a, b)
+          # TODO: implement this when we test (too tricky to implement without
+          # testing), but for the time being, EVERYBODY WINS
+          true
+        end
+
+        # TODO: error handling and especially testing
         def self.resolve_cookbook_version(name, condition)
-          # TODO: check assumption that cookbooks can't contain [ ~=><]
-          # TODO: replace this with library code?
+          # TODO: check assumption that cookbooks can't contain ~, =, >, <, or space
+          # TODO: replace this with library code?  Refactor at least, this is not pretty
           split = condition.split(' ')
           if (split.length > 1)
             comparison = split[0]
@@ -86,6 +93,7 @@ class Heimdall
             return condition
           end
           latest = chef.cookbook.latest_version(name)
+          cookbooks = chef.cookbook.versions(name)
           if (comparison == '=')
             return version
           elsif (comparison == '>')
@@ -95,8 +103,15 @@ class Heimdall
               return nil
             end
           elsif (comparison == '<')
-            # puts "+++++ #{chef.cookbook.versions('opscode-webui2')}"
-            # TODO: implement comparison
+            latest = nil
+            cookbooks.each do |cv|
+              if (compare_versions(version, cv) < 0)
+                if (!latest || compare_versions(latest, cv) > 0)
+                  latest = cv
+                end
+              end
+            end
+            return latest
           elsif (comparison == '>=')
             if (compare_versions(version, latest) >= 0)
               return latest
@@ -104,9 +119,24 @@ class Heimdall
               return nil
             end
           elsif (comparison == '<=')
-            # TODO: implement comparison
+            latest = nil
+            cookbooks.each do |cv|
+              if (compare_versions(version, cv) <= 0)
+                if (!latest || compare_versions(latest, cv) > 0)
+                  latest = cv
+                end
+              end
+            end
+            return latest
           elsif (comparison == '~>')
-            # TODO: implement comparison
+            latest = nil
+            cookbooks.each do |cv|
+              if (approximate_compare_versions(version, cv))
+                if (!latest || compare_versions(latest, cv) > 0)
+                  latest = cv
+                end
+              end
+            end
           end
         end
 
