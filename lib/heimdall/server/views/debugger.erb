@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+<head>
+  <title>Heimdall Debug Console</title>
+  <link rel="stylesheet" type="text/css" href="<%= url("/css/debugger.css") %>" />
+<% # Load all the lib stylesheets:
+   Dir.glob(File.join(Heimdall.config.public_folder, 'js', 'lib',
+       '*.css')).each do |file|
+     name = File.basename file %>
+  <link rel="stylesheet" type="text/css" href="<%= url("/js/lib/#{name}") %>" />
+<% end %>
+<% # Load all the visual stylesheets:
+   Dir.glob(File.join(Heimdall.config.public_folder, 'js', 'visual',
+       '*.css')).each do |file|
+     name = File.basename file %>
+  <link rel="stylesheet" type="text/css" href="<%= url("/js/visual/#{name}") %>" />
+<% end %>
+<% #TODO: download and include these scripts/move to public %>
+  <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+<% # Heimdall JS engine: %>  
+  <script src="<%= url("/js/heimdall.js") %>"></script>
+<% # Load all the libs:
+   Dir.glob(File.join(Heimdall.config.public_folder, 'js', 'lib', '*.js')).each do |file|
+     name = File.basename file %>
+  <script src="<%= url("/js/lib/#{name}") %>"></script>
+<% end %>
+<% # Load all the visual modules:
+   Dir.glob(File.join(Heimdall.config.public_folder, 'js', 'visual', '*.js')).each do |file|
+     name = File.basename file %>
+  <script src="<%= url("/js/visual/#{name}") %>"></script>
+<% end %>
+  <script>
+$(document).ready(function(){
+<% if (@show_list) %>
+    $("#editor").css("display", "none");
+    $("#script-list").css("display", "block");
+    $("#menu-editor").css("background", "#BBB");
+    $("#menu-list").css("background", "#CCC");
+<% end %>
+    $("#menu-editor").click(function() {
+        $("#editor").css("display", "block");
+        $("#script-list").css("display", "none");
+        $("#menu-editor").css("background", "#CCC");
+        $("#menu-list").css("background", "#BBB");
+    });
+    $("#menu-list").click(function() {
+        $("#editor").css("display", "none");
+        $("#script-list").css("display", "block");
+        $("#menu-editor").css("background", "#BBB");
+        $("#menu-list").css("background", "#CCC");
+    });
+    Heimdall.run("#visual-container", "<%= @name %>", <%= @args_json %>);
+});
+  </script>
+</head>
+<% #TODO: need to test all of this in firefox, safari? %>
+<body>
+  <div id="visual-container"></div>
+  <div id="menu">
+    <span id="menu-editor">Editor</span>
+    <span id="menu-list">Scripts</span>
+    <span id="menu-name">Heimdall Debug Console v<%= Heimdall::VERSION %></span>
+  </div>
+  <div id="editor">
+    <form id="editor-form" action="/debugger">
+      <div id="name-box">
+<% if (Heimdall.store.system?(@name)) %>
+        Script Name: <input type="text" id="name" name="name-disabled" value="<%= @name %>" disabled />
+        <input type="submit" name="load" class="submit" value="Load" disabled />
+      </div>
+      <div id="text-box">
+        <textarea name="script-disabled" id="script" disabled>
+[system script: can not be edited]
+
+<%= @script %></textarea>
+        <input type="hidden" name="name" value="<%= @name %>" />
+        <input type="hidden" name="script" value="<%= @script %>" />
+<% else %>
+        Script Name: <input type="text" id="name" name="name" value="<%= @name %>" />
+        <input type="submit" name="load" class="submit" value="Load" />
+      </div>
+      <div id="text-box">
+        <textarea name="script" id="script"><%= @script %></textarea>
+<% end %>
+      </div>
+      <div id="args-box">
+        Params: <input type="text" id="args" name="args" value="<%= @args %>" />
+      </div>
+      <div id="button-box">
+        <input type="submit" name="save" class="submit" value="<% if (!Heimdall.store.system?(@name)) %>Save/<% end %>Execute" />
+        <input type="submit" name="clear" class="submit" value="Clear" />
+      </div>
+    </form>
+  </div>
+  <div id="script-list">
+    <% row = 0
+       @list.each do |name| %>
+    <form class="list-form" action="/debugger">
+      <% row = 1 - row %>
+      <div class="list-row list-row-<%= row == 1 ? 'odd' : 'even' %>">
+        <input type="submit" name="load-<%= name %>" class="submit-short" value="Load" />
+<% if (Heimdall.store.system?(name)) %>
+        <input type="submit" name="delete-<%= name %>" class="submit-short" value="Delete" disabled />
+<% else %>
+        <input type="submit" name="delete-<%= name %>" class="submit-short" value="Delete" />
+<% end %>
+        <input type="hidden" name="name" value="<%= name %>" />
+<% if (Heimdall.store.system?(name)) %>
+        <span style="color: #700;">[system]</span> <%= name %>
+<% else %>
+        <%= name %>
+<% end %>
+      </div>
+    </form>
+    <% end %>
+  </div>
+</body>

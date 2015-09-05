@@ -1,0 +1,63 @@
+/* CSS for json tree lib */
+
+#json-tree-canvas {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+#json-tree-code {
+    padding: 0 0.5em;
+    border-top: 1px solid #BBB;
+    background: #FFF;
+    width: calc(100% - 1em);
+    height: 0;
+    height: calc(11em - 1px);
+    overflow: auto;
+    display: none;
+}
+
+.node {
+  cursor: pointer;
+}
+
+.overlay{
+  background-color: #EEE;
+}
+   
+.node circle {
+  fill: #FFF;
+  stroke: #333;
+  stroke-width: 1.5px;
+}
+   
+.node rect {
+  fill: #FFF;
+  stroke: #333;
+  stroke-width: 1.5px;
+}
+   
+.node text {
+  font-size: 10px; 
+  font-family: sans-serif;
+}
+   
+.link {
+  fill: none;
+  stroke: #DDD;
+  stroke-width: 1.5px;
+}
+
+.templink {
+  fill: none;
+  stroke: red;
+  stroke-width: 3px;
+}
+
+.code-key { color: #007; }
+.code-string { color: #070; }
+.code-number { color: #700; }
+.code-boolean { color: #077; }
+.code-null { color: #707; }
+
+.xcode-selectedx { background: #EEB; }

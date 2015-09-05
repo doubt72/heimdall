@@ -1,0 +1,136 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    font-size: 1em;
+    font-family: sans-serif;
+    height: 100%;
+    background: #DDD;
+}
+
+#menu {
+    margin: 1em 0.5em 0 0.5em;
+    width: 32em;
+    height: 1.5em;
+    float: right;
+}
+
+#menu-editor {
+    padding: 0.5em 3em 0.5em 1em;
+    margin: 0;
+    background: #CCC;
+    color: blue;
+}
+
+#menu-list {
+    padding: 0.5em 3em 0.5em 1em;
+    margin: 0;
+    background: #BBB;
+    color: blue;
+}
+
+#menu-name {
+    padding: 0.5em 1em 0.5em 1em;
+    margin: 0;
+}
+
+#editor {
+    margin-right: 0.5em;
+    padding: 1em;
+    background: #CCC;
+    width: 30em;
+    height: calc(100% - 5em);
+    float: right;
+}
+
+#editor-form {
+    height: calc(100% - 2em);
+}
+
+#name {
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+    width: 20em;
+}
+
+#name-box {
+    margin: 0.5em 0 1em 0;
+    padding: 0;
+    text-align: right;
+    width: 30.5em;
+}
+
+#script {
+    height: calc(100% - 0.5em);
+    width: calc(100% - 1em);
+}
+
+#text-box {
+    margin: 0;
+    padding: 0;
+    width: 30.5em;
+    height: calc(100% - 5em);
+}
+
+#args {
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+    width: 35em;
+}
+
+#args-box {
+    margin: 1em 0 1em 0;
+    padding: 0;
+    text-align: right;
+    width: 30.5em;
+}
+
+.submit {
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+    width: 9em;
+}
+
+#button-box {
+    margin: 0.5em 0 0 0;
+    padding: 0;
+    text-align: right;
+    width: 30.5em;
+}
+
+#script-list {
+    margin-right: 0.5em;
+    padding: 1em;
+    background: #CCC;
+    width: 30em;
+    height: calc(100% - 5em);
+    float: right;
+    display: none;
+    overflow: auto;
+}
+
+.list-row {
+    padding: 0.5em;
+}
+
+.list-row-even {
+    background: #CCC;
+}
+
+.list-row-odd {
+    background: #DDD;
+}
+
+.submit-short {
+    margin-right: 0.5em;
+    width: 7em;
+}
+
+#visual-container {
+    margin-left: 0.5em;
+    margin-top: 0.5em;
+    background: #FFF;
+    width: calc(100% - 33.5em);
+    height: calc(100% - 1em);
+    float: left;
+    overflow: auto;
+}
