@@ -59,7 +59,10 @@ $(document).ready(function(){
     });
     $("#show-editor").click(function() {
         $("#menu").css("display", "block");
+        $("#menu-editor").css("background", "#CCC");
+        $("#menu-list").css("background", "#BBB");
         $("#editor").css("display", "block");
+        $("#script-list").css("display", "none");
         $("#show-editor").css("display", "none");
         $("#visual-container").css("width", "calc(100% - 33.5em)");
     });

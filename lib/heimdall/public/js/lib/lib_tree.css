@@ -47,12 +47,6 @@
   stroke-width: 1.5px;
 }
 
-.templink {
-  fill: none;
-  stroke: red;
-  stroke-width: 3px;
-}
-
 .code-key { color: #007; }
 .code-string { color: #070; }
 .code-number { color: #700; }
