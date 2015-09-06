@@ -51,6 +51,18 @@ $(document).ready(function(){
         $("#menu-editor").css("background", "#BBB");
         $("#menu-list").css("background", "#CCC");
     });
+    $("#menu-hide").click(function() {
+        $("#menu").css("display", "none");
+        $("#editor").css("display", "none");
+        $("#show-editor").css("display", "block");
+        $("#visual-container").css("width", "calc(100% - 3.2em)");
+    });
+    $("#show-editor").click(function() {
+        $("#menu").css("display", "block");
+        $("#editor").css("display", "block");
+        $("#show-editor").css("display", "none");
+        $("#visual-container").css("width", "calc(100% - 33.5em)");
+    });
     Heimdall.run("#visual-container", "<%= @name %>", <%= @args_json %>);
 });
   </script>
@@ -62,6 +74,11 @@ $(document).ready(function(){
     <span id="menu-editor">Editor</span>
     <span id="menu-list">Scripts</span>
     <span id="menu-name">Heimdall Debug Console v<%= Heimdall::VERSION %></span>
+    <span id="menu-hide">&mdash;</span>
+  </div>
+  <div id="show-editor">
+    <div id="show-editor-padding"></div>
+    <span id="show-editor-button">&lt;<br /><br />&lt;<br /><br />&lt;</span>
   </div>
   <div id="editor">
     <form id="editor-form" action="/debugger">

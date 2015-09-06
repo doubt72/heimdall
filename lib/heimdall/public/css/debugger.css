@@ -15,14 +15,14 @@ html, body {
 }
 
 #menu-editor {
-    padding: 0.5em 3em 0.5em 1em;
+    padding: 0.5em 2em 0.5em 1em;
     margin: 0;
     background: #CCC;
     color: blue;
 }
 
 #menu-list {
-    padding: 0.5em 3em 0.5em 1em;
+    padding: 0.5em 2em 0.5em 1em;
     margin: 0;
     background: #BBB;
     color: blue;
@@ -31,6 +31,40 @@ html, body {
 #menu-name {
     padding: 0.5em 1em 0.5em 1em;
     margin: 0;
+}
+
+#menu-hide {
+    padding: 0.35em 0 0.35em 0;
+    margin: -0.5em 0 0 0;
+    background: #CCC;
+    color: red;
+    display: block;
+    float: right;
+    text-align: center;
+    width: 1.7em;
+}
+
+#show-editor {
+    margin-top: 0.5em;
+    margin-right: 0.5em;
+    background: #CCC;
+    width: 1.7em;
+    height: calc(100% - 1em);
+    float: right;
+    display: none;
+}
+
+#show-editor-padding {
+    margin: 0;
+    padding: 0;
+    height: calc(50% - 3em);
+}
+
+#show-editor-button {
+    color: red;
+    width: 1.65em;
+    display: block;
+    text-align: center;
 }
 
 #editor {
