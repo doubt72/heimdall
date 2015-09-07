@@ -66,6 +66,20 @@ $(document).ready(function(){
         $("#show-editor").css("display", "none");
         $("#visual-container").css("width", "calc(100% - 33.5em)");
     });
+    function check_name() {
+        console.log('check_name');
+        if ($('#name').val() == '') {
+            console.log('name is empty');
+            $('#save')[0].disabled = true;
+        } else {
+            console.log('name is not empty');
+            $('#save')[0].disabled = false;
+        };
+    };
+    $('#name').on('input', null, null, function() {
+        check_name();
+    });
+    check_name();
     Heimdall.run("#visual-container", "<%= @name %>", <%= @args_json %>);
 });
   </script>
@@ -109,7 +123,7 @@ $(document).ready(function(){
         Params: <input type="text" id="args" name="args" value="<%= @args %>" />
       </div>
       <div id="button-box">
-        <input type="submit" name="save" class="submit" value="<% if (!Heimdall.store.system?(@name)) %>Save/<% end %>Execute" />
+        <input type="submit" id="save" name="save" class="submit" value="<% if (!Heimdall.store.system?(@name)) %>Save/<% end %>Execute" />
         <input type="submit" name="clear" class="submit" value="Clear" />
       </div>
     </form>
