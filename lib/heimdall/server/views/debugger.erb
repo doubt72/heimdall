@@ -39,6 +39,7 @@ $(document).ready(function(){
     $("#menu-editor").css("background", "#BBB");
     $("#menu-list").css("background", "#CCC");
 <% end %>
+    // Side panel buttons
     $("#menu-editor").click(function() {
         $("#editor").css("display", "block");
         $("#script-list").css("display", "none");
@@ -54,6 +55,7 @@ $(document).ready(function(){
     $("#menu-hide").click(function() {
         $("#menu").css("display", "none");
         $("#editor").css("display", "none");
+        $("#script-list").css("display", "none");
         $("#show-editor").css("display", "block");
         $("#visual-container").css("width", "calc(100% - 3.2em)");
     });
@@ -66,20 +68,51 @@ $(document).ready(function(){
         $("#show-editor").css("display", "none");
         $("#visual-container").css("width", "calc(100% - 33.5em)");
     });
-    function check_name() {
-        console.log('check_name');
+
+    // Disable save/execute when no name present
+    function checkName() {
         if ($('#name').val() == '') {
-            console.log('name is empty');
             $('#save')[0].disabled = true;
         } else {
-            console.log('name is not empty');
             $('#save')[0].disabled = false;
         };
     };
     $('#name').on('input', null, null, function() {
-        check_name();
+        checkName();
     });
-    check_name();
+    checkName();
+
+    // Toggle/remapping of classes for script list
+    function remapScriptList(showSystem) {
+        var items = $('.list-row');
+        items.removeClass('list-row-even');
+        items.removeClass('list-row-odd');
+        var count = 0;
+        items.each(function(i) {
+            if (count % 2 == 0) {
+                $(this).addClass('list-row-even');
+            } else {
+                $(this).addClass('list-row-odd');
+            }
+            if (showSystem || !$(this).hasClass('list-row-system')) {
+                count++;
+            };
+        });
+    }
+    $('#script-list-bottom').click(function () {
+        if ($('#script-list-bottom').text() == 'show system scripts') {
+            $('#script-list-bottom').text('hide system scripts');
+            $('.list-row-system').css('display', 'block');
+            remapScriptList(true);
+        } else {
+            $('#script-list-bottom').text('show system scripts');
+            $('.list-row-system').css('display', 'none');
+            remapScriptList(false);
+        }
+    });
+    remapScriptList(false);
+
+    // Load our script
     Heimdall.run("#visual-container", "<%= @name %>", <%= @args_json %>);
 });
   </script>
@@ -129,25 +162,27 @@ $(document).ready(function(){
     </form>
   </div>
   <div id="script-list">
-    <% row = 0
-       @list.each do |name| %>
-    <form class="list-form" action="/debugger">
-      <% row = 1 - row %>
-      <div class="list-row list-row-<%= row == 1 ? 'odd' : 'even' %>">
-        <input type="submit" name="load-<%= name %>" class="submit-short" value="Load" />
-<% if (Heimdall.store.system?(name)) %>
-        <input type="submit" name="delete-<%= name %>" class="submit-short" value="Delete" disabled />
+    <div id="script-list-list">
+      <% @list.each do |name| %>
+      <form class="list-form" action="/debugger">
+        <% system = Heimdall.store.system?(name) %>
+        <div class="list-row<%= system ? ' list-row-system' : ''  %>">
+          <input type="submit" name="load-<%= name %>" class="submit-short" value="Load" />
+<% if (system) %>
+          <input type="submit" name="delete-<%= name %>" class="submit-short" value="Delete" disabled />
 <% else %>
-        <input type="submit" name="delete-<%= name %>" class="submit-short" value="Delete" />
+          <input type="submit" name="delete-<%= name %>" class="submit-short" value="Delete" />
 <% end %>
-        <input type="hidden" name="name" value="<%= name %>" />
+          <input type="hidden" name="name" value="<%= name %>" />
 <% if (Heimdall.store.system?(name)) %>
-        <span style="color: #700;">[system]</span> <%= name %>
+          <span style="color: #700;">[system]</span> <%= name %>
 <% else %>
-        <%= name %>
+          <%= name %>
 <% end %>
-      </div>
-    </form>
-    <% end %>
+        </div>
+      </form>
+      <% end %>
+    </div>
+    <div id="script-list-bottom">show system scripts</div>
   </div>
 </body>

@@ -40,7 +40,7 @@ html, body {
     padding: 0.35em 0 0.35em 0;
     margin: -0.5em 0 0 0;
     background: #CCC;
-    color: red;
+    color: blue;
     display: block;
     float: right;
     text-align: center;
@@ -66,7 +66,7 @@ html, body {
 }
 
 #show-editor-button {
-    color: red;
+    color: blue;
     width: 1.65em;
     display: block;
     text-align: center;
@@ -139,13 +139,32 @@ html, body {
 
 #script-list {
     margin-right: 0.5em;
+    padding: 0;
+    background: #CCC;
+    width: 32em;
+    height: calc(100% - 3em);
+    float: right;
+    display: none;
+    overflow: none;
+}
+
+#script-list-list {
+    margin: 0;
     padding: 1em;
     background: #CCC;
     width: 30em;
-    height: calc(100% - 5em);
-    float: right;
-    display: none;
+    height: calc(100% - 4.3em);
     overflow: auto;
+}
+
+#script-list-bottom {
+    margin: 0;
+    padding: 0.4em 1em 0.2em 1em;
+    background: #CCC;
+    text-align: right;
+    height: 1.3em;
+    color: blue;
+    cursor: default;
 }
 
 .list-row {
@@ -153,11 +172,15 @@ html, body {
 }
 
 .list-row-even {
-    background: #CCC;
+    background: #DDD;
 }
 
 .list-row-odd {
-    background: #DDD;
+    background: #CCC;
+}
+
+.list-row-system {
+    display: none;
 }
 
 .submit-short {
