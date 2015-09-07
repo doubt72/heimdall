@@ -173,10 +173,8 @@ facilitate navigation between Chef tree visuals.
 
 ### Now:
 
-* Make git repo
 # Make cookbook dependency graph
 * Properly modularize Sinatra (will probably require changes to test setup)
-* Resize tree view canvas
 * Make diagrams
   * Server structure
   * Source layout

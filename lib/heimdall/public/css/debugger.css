@@ -191,7 +191,7 @@ html, body {
 #visual-container {
     margin-left: 0.5em;
     margin-top: 0.5em;
-    background: #FFF;
+    background: #EEE;
     width: calc(100% - 33.5em);
     height: calc(100% - 1em);
     float: left;
