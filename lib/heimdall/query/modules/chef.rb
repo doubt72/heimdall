@@ -137,6 +137,7 @@ class Heimdall
                 end
               end
             end
+            return latest
           end
         end
 

@@ -1,1 +1,17 @@
 /* CSS for chef visuals */
+
+.chef-breadcrumbs {
+    padding: 0.4em 0.5em 0.2em 0.5em;
+    margin: 0 0 0 0;
+    width: calc(100% - 1em);
+    height: calc(1em - 1px);
+    background: #EEE;
+    overflow: hidden;
+    border-bottom: 1px solid #BBB;
+    color: #555;
+}
+
+.chef-breadcrumb-item {
+    color: blue;
+    cursor: default;
+}
