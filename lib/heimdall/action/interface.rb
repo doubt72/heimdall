@@ -1,22 +1,22 @@
-# Heimdall query interface
+# Heimdall action interface
 
 class Heimdall
-  class Query
+  class Action
     class Interface
       def initialize
         @register = {}
       end
 
-      # Registered queries should be functions (Proc objects) which take one
+      # Registered actions should be functions (Proc objects) which take one
       # parameter (which will be passed in the form of a string from the API).  For
-      # example, the following is a query which would simply execute arbitrary ruby
+      # example, the following is a action which would simply execute arbitrary ruby
       # code, with the return value being passed back to the API to be encoded into
       # JSON:
       #
       # register('ruby', Proc.new {|code| eval code})
       #
       # You probably never actually want to do that, but it's possible; the point
-      # being queries can be almost entirely arbitrary
+      # being actions can be almost entirely arbitrary
 
       def register(name, function)
         @register[name] = function

@@ -1,6 +1,66 @@
 require 'sinatra_spec_helper'
 
 describe "Heimdall::API" do
+  context "simple action API" do
+    let(:name) { 'ruby' }
+    let(:url) { '/action' }
+    let(:action) { 'true' }
+
+    before(:each) do
+      # Register an action for testing
+      Heimdall.action.interface.register(name, Proc.new {|code| eval code})
+    end
+
+    after(:each) do
+      # Clear registered action after testing
+      Heimdall.action.interface.delete(name)
+
+      # Make sure everything is cleaned up
+      Heimdall.action.interface.list.should eq([])
+    end
+
+    it "returns value with valid action" do
+      post url, {name: name, action: action}.to_json
+
+      last_response.status.should eq(200)
+      last_response.body.should eq({return: true}.to_json)
+    end
+
+    it "returns 404 with unregistered action" do
+      post url, {name: 'bogus', action: action}.to_json
+
+      last_response.status.should eq(404)
+    end
+
+    it "returns 400 with no name" do
+      post url, {action: action}.to_json
+
+      last_response.status.should eq(400)
+      last_response.body.should eq({error: "required parameters missing"}.to_json)
+    end
+
+    it "returns 400 with no action" do
+      post url, {name: name}.to_json
+
+      last_response.status.should eq(400)
+      last_response.body.should eq({error: "required parameters missing"}.to_json)
+    end
+
+    it "returns 400 and error with internal error/invalid action" do
+      post url, {name: name, action: 'bogus'}.to_json
+
+      last_response.status.should eq(400)
+      last_response.body.should match({error: "undefined local variable or method `bogus'.*"}.to_json)
+    end
+
+    it "ignores extra keys" do
+      post url, {name: name, action: action, extra: 'extra'}.to_json
+
+      last_response.status.should eq(200)
+      last_response.body.should eq({return: true}.to_json)
+    end
+  end
+
   context "simple query API" do
     let(:name) { 'ruby' }
     let(:url) { '/query' }

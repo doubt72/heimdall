@@ -187,7 +187,7 @@ facilitate navigation between Chef tree visuals.
 * Sanitize/polish DSL (perhaps use cleanroom?)
 * Switch to params in the debugger that aren't encoded in the URL (going to break down with long scripts)
 * Local copies of JQuery and D3 libraries instead of remote
-* Add authn/authz filters
+* Add authn/authz filters/seperate perms for reading and writing storage enpoint
 * Test in FF and Safari
 * Switch debugger to default off unless configured
 * Make visuals properly embeddable

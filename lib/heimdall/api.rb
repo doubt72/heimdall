@@ -1,5 +1,6 @@
 # Configure sinatra query and store REST endpoints
 
+require 'heimdall/api/action'
 require 'heimdall/api/query'
 require 'heimdall/api/store'
 

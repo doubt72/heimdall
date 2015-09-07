@@ -12,6 +12,7 @@ class Heimdall
   end
 end
 
+require 'heimdall/action'
 require 'heimdall/api'
 require 'heimdall/coder'
 require 'heimdall/query'
@@ -28,6 +29,10 @@ set :public_folder, Heimdall.config.public_folder
 set :port, Heimdall.config.port
 
 class Heimdall
+  def self.action
+    @@action
+  end
+
   def self.query
     @@query
   end
@@ -37,12 +42,13 @@ class Heimdall
   end
 
   @@store = Heimdall::Store.new
+  @@action = Heimdall::Action.new
   @@query = Heimdall::Query.new
 
   # Order is important here.  Load_modules reads the module config, which defines
   # the settings that are available to be set when read_config run, and once
   # configured, the modules then register their queries with the server.  All of this
-  # needs to run after setting up config and query objects and readers.
+  # needs to run after setting up config and query/action objects and readers.
   @@query.load_modules
   @@config.read_config((defined? CONFIG_FILE) ? CONFIG_FILE : nil)
   @@query.register_modules
