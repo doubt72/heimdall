@@ -46,35 +46,6 @@ class Heimdall
           )
         end
 
-        # TODO: This particularly needs testing
-        def self.compare_versions(a, b)
-          a_maj, a_min, a_patch = a.split('.')
-          b_maj, b_min, b_patch = b.split('.')
-          if (a_maj > b_maj)
-            return -1
-          elsif (a_maj < b_maj)
-            return 1
-          end
-          if (a_min > b_min)
-            return -1
-          elsif (a_min < b_min)
-            return 1
-          end
-          if (a_patch > b_patch)
-            return -1
-          elsif (a_patch < b_patch)
-            return 1
-          end
-          return 0
-        end
-
-        # TODO: This particularly needs testing
-        def self.approximate_compare_versions(a, b)
-          # TODO: implement this when we test (too tricky to implement without
-          # testing), but for the time being, EVERYBODY WINS
-          true
-        end
-
         # TODO: error handling and especially testing
         def self.resolve_cookbook_version(name, condition)
           # TODO: check assumption that cookbooks can't contain ~, =, >, <, or space
@@ -93,46 +64,26 @@ class Heimdall
             return condition
           end
           latest = chef.cookbook.latest_version(name)
-          cookbooks = chef.cookbook.versions(name)
           if (comparison == '=')
             return version
           elsif (comparison == '>')
-            if (compare_versions(version, latest) > 0)
+            if (Gem::Version.new(latest) > Gem::Version.new(version))
               return latest
             else
               return nil
             end
-          elsif (comparison == '<')
-            latest = nil
-            cookbooks.each do |cv|
-              if (compare_versions(version, cv) < 0)
-                if (!latest || compare_versions(latest, cv) > 0)
-                  latest = cv
-                end
-              end
-            end
-            return latest
           elsif (comparison == '>=')
-            if (compare_versions(version, latest) >= 0)
+            if (Gem::Version.new(latest) >= Gem::Version.new(version))
               return latest
             else
               return nil
             end
-          elsif (comparison == '<=')
+          elsif (comparison == '<' || comparison == '<=' || comparison == '~>')
             latest = nil
+            cookbooks = chef.cookbook.versions(name)
             cookbooks.each do |cv|
-              if (compare_versions(version, cv) <= 0)
-                if (!latest || compare_versions(latest, cv) > 0)
-                  latest = cv
-                end
-              end
-            end
-            return latest
-          elsif (comparison == '~>')
-            latest = nil
-            cookbooks.each do |cv|
-              if (approximate_compare_versions(version, cv))
-                if (!latest || compare_versions(latest, cv) > 0)
+              if (Gem::Dependency.new('', condition).match?('', cv))
+                if (!latest || Gem::Version.new(cv) > Gem::Version.new(latest))
                   latest = cv
                 end
               end
@@ -140,7 +91,6 @@ class Heimdall
             return latest
           end
         end
-
 
         def self.start
           # Chef objects

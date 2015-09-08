@@ -232,9 +232,7 @@ See the `heimdall_visuals.md` document file in the Heimdall doc directory.
 
 ## TODO List
 
-* Reorganize public directory ... css in js directories is weird
-* Make cookbook dependency graph visual
-* Properly modularize Sinatra (will probably require changes to test setup)
+* Properly modularize Sinatra (will require changes to test setup)
 * Add logging
 * _**TEST CHEF MODULE**_ (...stub out chef server?)
 * Set up persistent data store to replace in-memory hash stub
