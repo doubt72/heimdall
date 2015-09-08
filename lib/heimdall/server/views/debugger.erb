@@ -5,28 +5,28 @@
   <title>Heimdall Debug Console</title>
   <link rel="stylesheet" type="text/css" href="<%= url("/css/debugger.css") %>" />
 <% # Load all the lib stylesheets:
-   Dir.glob(File.join(Heimdall.config.public_folder, 'js', 'lib',
+   Dir.glob(File.join(Heimdall.config.public_folder, 'lib',
        '*.css')).each do |file|
      name = File.basename file %>
-  <link rel="stylesheet" type="text/css" href="<%= url("/js/lib/#{name}") %>" />
+  <link rel="stylesheet" type="text/css" href="<%= url("/lib/#{name}") %>" />
 <% end %>
 <% # Load all the visual stylesheets:
-   Dir.glob(File.join(Heimdall.config.public_folder, 'js', 'visual',
+   Dir.glob(File.join(Heimdall.config.public_folder, 'visual',
        '*.css')).each do |file|
      name = File.basename file %>
-  <link rel="stylesheet" type="text/css" href="<%= url("/js/visual/#{name}") %>" />
+  <link rel="stylesheet" type="text/css" href="<%= url("/visual/#{name}") %>" />
 <% end %>
 <% # Heimdall JS engine: %>  
   <script src="<%= url("/js/heimdall.js") %>"></script>
 <% # Load all the libs:
-   Dir.glob(File.join(Heimdall.config.public_folder, 'js', 'lib', '*.js')).each do |file|
+   Dir.glob(File.join(Heimdall.config.public_folder, 'lib', '*.js')).each do |file|
      name = File.basename file %>
-  <script src="<%= url("/js/lib/#{name}") %>"></script>
+  <script src="<%= url("/lib/#{name}") %>"></script>
 <% end %>
 <% # Load all the visual modules:
-   Dir.glob(File.join(Heimdall.config.public_folder, 'js', 'visual', '*.js')).each do |file|
+   Dir.glob(File.join(Heimdall.config.public_folder, 'visual', '*.js')).each do |file|
      name = File.basename file %>
-  <script src="<%= url("/js/visual/#{name}") %>"></script>
+  <script src="<%= url("/visual/#{name}") %>"></script>
 <% end %>
   <script>
 $(document).ready(function(){
@@ -150,7 +150,7 @@ $(document).ready(function(){
 <% end %>
       </div>
       <div id="args-box">
-        Params: <input type="text" id="args" name="args" value="<%= @args %>" />
+        Args: <input type="text" id="args" name="args" value="<%= @args %>" />
       </div>
       <div id="button-box">
         <input type="submit" id="save" name="save" class="submit" value="<% if (!Heimdall.store.system?(@name)) %>Save/<% end %>Execute" />

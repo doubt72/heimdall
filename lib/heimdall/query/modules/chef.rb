@@ -13,13 +13,13 @@ class Heimdall
       end
 
       # Server URL
-      default :server_url, nil
+      config :server_url
 
       # Client name
-      default :client_name, nil
+      config :client_name
 
       # Path to private key
-      default :client_key, nil
+      config :client_key
     end
   end
 end

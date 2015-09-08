@@ -26,6 +26,10 @@ class Heimdall
           end
         end
       end
+
+      def config(key)
+        default key, nil
+      end
     end
   end
 end

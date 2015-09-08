@@ -54,7 +54,7 @@ class Heimdall
   @@query.register_modules
 
   # Register system scripts supplied for visuals
-  Dir.glob(File.join(@@config.public_folder, 'js', 'visual', '*.rb')).each do |file|
+  Dir.glob(File.join(@@config.public_folder, 'visual', '*.rb')).each do |file|
     require file
   end
   # And a debug script
