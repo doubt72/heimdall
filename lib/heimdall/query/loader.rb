@@ -15,7 +15,7 @@ class Heimdall
         Heimdall.config.module_dirs.each do |dir|
           Dir.glob(File.join(dir, '*.rb')).each do |file|
             name = File.basename file, ".rb"
-            eval "Heimdall::Query::Modules::#{name.capitalize}.register"
+            eval "Heimdall::Query::Modules::#{name.capitalize}.start"
           end
         end
       end

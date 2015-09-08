@@ -142,7 +142,7 @@ class Heimdall
         end
 
 
-        def self.register
+        def self.start
           # Chef objects
           Heimdall.query.interface.register(
             'chef-client',

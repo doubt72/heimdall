@@ -32,14 +32,15 @@ The other thing a a module needs to do is register queries/actions:
 
 The module itself should be a subclass of `Heimdall::Query::Modules` and be in a
 file with the same name as the subclass (class capitalized, file not capitalized).
-When the server is initialized, it will call the `register` class method, i.e., it
+When the server is initialized, it will call the `start` class method, i.e., it
 will call:
 
 ```
-Heimdall::Query::Modules::Module.register
+Heimdall::Query::Modules::Module.start
 ```
 
-Again, assuming the module is called `Module` and is in a file `module.rb`.  This function should in turn register and queries in the register class method like so:
+Again, assuming the module is called `Module` and is in a file `module.rb`.  This
+function should in turn register and queries in the register class method like so:
 
 ```
 Heimdall.query.interface.register(name, function)
