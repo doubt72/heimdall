@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.date          = '2015-08-20'
 
   s.summary       = 'Heimdall'
-  s.description   = 'Chef scriptable visualization server'
+  s.description   = 'Heimdall scriptable visualization server'
 
   s.authors       = ['Douglas Triggs']
   s.email         = 'doug@chef.io'
