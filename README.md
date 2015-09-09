@@ -10,6 +10,10 @@ Before running Heimdall, cd to the Heimdall top directory and run:
 
 `bundle install`
 
+(For the record, Heimdall was written in Ruby 2.2.2; not sure how many versions back
+it will successfully run; probably 2.0? Maybe 1.9?  Really, just run 2.2.2 in
+whatever ruby version tool you use, rbenv, chruby or whatever.  Anyway.)
+
 Once that's done, you can start the server with:
 
 `bin/server`
@@ -101,15 +105,15 @@ Parameters should be a JSON object passed to the script at runtime.
 
 ### A Note on Scripts
 
-Scripts can be accessed via the `/store` REST API described below (or directly
-through the debugger interface that accesses same).  An important thing to note is
-that there are two kinds of scripts: user created and system scripts.  System
-scripts cannot be modified (or deleted) by the user; most system scripts are set up
-by Heimdall visuals to allow the visuals to integrate with each other.  For
-instance, there are a number of included visuals for interacting with Chef server
-objects, and these scripts are required to navigate between them (e.g., the Chef
-cookbook list visual uses a system script to link to specific Chef cookbooks via
-this mechanism).
+Scripts can be accessed via the `/store` REST API described below that the visual
+engine uses (or indirectly through the debugger interface that accesses same).  An
+important thing to note is that there are two kinds of scripts: user created and
+system scripts.  System scripts cannot be modified (or deleted) by the user; most
+system scripts are set up by Heimdall visuals to allow the visuals to integrate with
+each other.  For instance, there are a number of included visuals for interacting
+with Chef server objects, and these scripts are required to navigate between them
+(e.g., the Chef cookbook list visual uses a system script to link to specific Chef
+cookbooks via this mechanism).
 
 ## Config
 
@@ -224,11 +228,19 @@ required, it might be stringified before passing, and parsed by the query module
 
 ## Query Modules
 
-See the `query_modules.md` document file in the Heimdall doc directory.
+See the [query_modules.md](doc/query_modules.md) document file in the Heimdall doc
+directory.
 
 ## Heimdall Visuals
 
-See the `heimdall_visuals.md` document file in the Heimdall doc directory.
+See the [heimdall_visuals.md](doc/heimdall_visuals.md) document file in the Heimdall
+doc directory.
+
+## Server Architecture
+
+It looks like this:
+
+![architecture diagram](doc/architecture.png "Architecture Diagram")
 
 ## TODO List
 
