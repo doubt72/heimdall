@@ -10,9 +10,8 @@ Before running Heimdall, cd to the Heimdall top directory and run:
 
 `bundle install`
 
-(For the record, Heimdall was written in Ruby 2.2.2; not sure how many versions back
-it will successfully run; probably 2.0? Maybe 1.9?  Really, just run 2.2.2 in
-whatever ruby version tool you use, rbenv, chruby or whatever.  Anyway.)
+[NB: Heimdall was built for Ruby 2.2.2; earlier versions of Ruby may or may not
+work.]
 
 Once that's done, you can start the server with:
 
@@ -50,15 +49,17 @@ To run the tests, run:
 These describe the various components of the Heimdall system:
 
 * `script`: ruby DSL code that gets executed by the Heimdall server to render a
-  visual (see below).  Can contain configuration code to affect the appearance and
-  behavior of the visual.
+  visual _block_ which corresponds with a Heimdall _visual_ of the same name written
+  in Javascript (see below).  Can contain configuration code to affect the
+  appearance and behavior of the visual.
 
-* `module`: a.k.a., query module: this is a Chef class that sets up queries and
+* `query module`: a.k.a., module: this is a Chef class that sets up queries and
   actions against something (like an external server) that is called from a
   Heimdall visual to retrieve the data it needs.
 
-* `visual`: a.k.a., Heimdall visual: a Javascript function registered with the
-  Heimdall Javascript library that renders itself in the supplied div.
+* `Heimdall visual`: a.k.a., visual: a Javascript function registered with the
+  Heimdall Javascript library that renders itself in the supplied div.  Corresponds
+  with a visual _block_ of the same name in the script DSL.
 
 * `query`: a named function registered with the Heimdall server to return data.
   Supplied by a module, called from a visual.
@@ -242,6 +243,10 @@ It looks like this:
 
 ![architecture diagram](doc/architecture.png "Architecture Diagram")
 
+This is a slight simplification of the query/action interface due to space
+constraints (they're actually distinct inside Heimdall core), but the internal
+interface is the same.
+
 ## TODO List
 
 * Properly modularize Sinatra (will require changes to test setup)
@@ -250,7 +255,7 @@ It looks like this:
 * Set up persistent data store to replace in-memory hash stub
 * Sanitize/polish DSL (perhaps use cleanroom?)
 * Switch to params in the debugger that aren't encoded in the URL (going to break down with long scripts)
-* Add authn/authz filters/seperate perms for reading and writing storage enpoint
+* Add authn/authz filters/seperate perms for reading and writing storage endpoint
 * Test in FF and Safari
 * Switch debugger to default off unless configured
 * query calls need to be configurable/explicit uri with port/server; deal with xss

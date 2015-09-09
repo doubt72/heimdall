@@ -29,7 +29,7 @@ reason to do so.
 Visuals should register themselves using:
 
 ```
-Heimdall.registerVisual('name', callback)
+Heimdall.registerVisual(name, callback)
 ```
 
 Where `name` is the name of the visual (referred to in the DSL with the `visual`
@@ -64,7 +64,7 @@ and passed to the visual), and `args` are arguments passed to the visual.
 In general, HTML IDs should be avoided in the rendered visual; otherwise a visual of
 a given type would be limited to one rendered per page.  If IDs are necessary for
 some reason, they should probably be by appending to the ID that the visual
-is rendered in to avoid repeating them and causing issues with repeated IDs.
+is rendered in to avoid causing issues with repeated IDs.
 
 ## Included Visuals
 
@@ -72,6 +72,10 @@ Currently there are a number of included visuals, including various tree visuals
 looking at various Chef server objects and navigating through them, as well as a
 couple of generic tree visuals for working with generic JSON or on the library
 itself.  They can be listed in the debugger by running the debug visual.
+
+Probably the best simple example of a visual is the `json-tree` visual in
+`json_tree.js`; the Chef visuals (since they interact with each other) are much more
+complicated, though examining how they work may be instructive.
 
 There are also some system scripts that are loaded into the storage class at startup
 to facilitate navigation between Chef tree visuals.
