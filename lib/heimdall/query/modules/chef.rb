@@ -46,20 +46,19 @@ class Heimdall
           )
         end
 
-        # TODO: error handling and especially testing
+        # TODO: error handling?
         def self.resolve_cookbook_version(name, condition)
           # TODO: check assumption that cookbooks can't contain ~, =, >, <, or space
-          # TODO: replace this with library code?  Refactor at least, this is not pretty
           split = condition.split(' ')
           if (split.length > 1)
             comparison = split[0]
             version = split[1]
-          elsif (condition =~ /^=|^<|^>/)
-            comparison = condition[0]
-            version = condition[1..-1]
           elsif (condition =~ /^~>|^<=|^>=/)
             comparison = condition[0..1]
             version = condition[2..-1]
+          elsif (condition =~ /^=|^<|^>/)
+            comparison = condition[0]
+            version = condition[1..-1]
           else
             return condition
           end

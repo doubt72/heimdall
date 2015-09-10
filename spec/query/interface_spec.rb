@@ -24,6 +24,10 @@ describe "Heimdall::Query::Interface" do
     it "should execute a query" do
       interface.execute(name, 'true').should eq(return: true)
     end
+
+    it "should return notfound for bad query" do
+      interface.execute('bogus', 'bogus').should eq(error: 'notfound')
+    end
   end
 
   context "#delete" do

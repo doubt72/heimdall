@@ -53,7 +53,7 @@ These describe the various components of the Heimdall system:
   in Javascript (see below).  Can contain configuration code to affect the
   appearance and behavior of the visual.
 
-* `query module`: a.k.a., module: this is a Chef class that sets up queries and
+* `query module`: a.k.a., module: this is a Ruby class that sets up queries and
   actions against something (like an external server) that is called from a
   Heimdall visual to retrieve the data it needs.
 
@@ -251,7 +251,6 @@ interface is the same.
 
 * Properly modularize Sinatra (will require changes to test setup)
 * Add logging
-* _**TEST CHEF MODULE**_ (...stub out chef server?)
 * Set up persistent data store to replace in-memory hash stub
 * Sanitize/polish DSL (perhaps use cleanroom?)
 * Switch to params in the debugger that aren't encoded in the URL (going to break down with long scripts)
