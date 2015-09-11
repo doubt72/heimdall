@@ -11,8 +11,8 @@ Gem::Specification.new do |s|
   s.description   = 'Heimdall scriptable visualization server'
 
   s.authors       = ['Douglas Triggs']
-  s.email         = 'doug@chef.io'
-  s.homepage      = 'http://chef.io'
+  s.email         = 'douglas@triggs.org'
+  s.homepage      = 'https://github.com/doubt72'
 
   s.files         = Dir['spec/**/*_spec.rb'] + Dir['lib/**/*.rb']
   s.require_paths = ['spec', 'lib']

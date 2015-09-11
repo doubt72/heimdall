@@ -247,6 +247,14 @@ This is a slight simplification of the query/action interface due to space
 constraints (they're actually distinct inside Heimdall core), but the internal
 interface is the same.
 
+## Maintainer
+
+Douglas Triggs [douglas@triggs.org, doug@chef.io] is responsible for Heimdall, the
+Chef query module, and the Chef and JSON Tree visuals.  The base tree visual in the
+library used by them was originally adapted from an example built by Rob Schmuecker
+and available from the [d3js.org](http://d3js.org/) examples (specifically
+[here](http://bl.ocks.org/robschmuecker/7880033)) and very heavily modified.
+
 ## TODO List
 
 * Add logging

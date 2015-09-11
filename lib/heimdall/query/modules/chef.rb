@@ -1,4 +1,6 @@
 # Chef server module
+#
+# Author: Douglas Triggs (douglas@triggs.org)
 
 require 'ridley'
 
