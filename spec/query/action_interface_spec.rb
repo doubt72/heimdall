@@ -47,7 +47,7 @@ end
       interface.list.should eq([name])
     end
 
-    it "lists multiple queries" do
+    it "lists multiple actions" do
       interface.register('echo', Proc.new {|msg| msg})
       interface.register('increment', Proc.new {|x| x + 1})
       interface.register('decrement', Proc.new {|x| x - 1})

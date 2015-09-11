@@ -249,14 +249,14 @@ interface is the same.
 
 ## TODO List
 
-* Properly modularize Sinatra (will require changes to test setup)
 * Add logging
 * Set up persistent data store to replace in-memory hash stub
 * Sanitize/polish DSL (perhaps use cleanroom?)
-* Switch to params in the debugger that aren't encoded in the URL (going to break down with long scripts)
+* Switch to params in the debugger that aren't encoded in the URL (going to break
+  down with long scripts)
 * Add authn/authz filters/seperate perms for reading and writing storage endpoint
 * Test in FF and Safari
 * Switch debugger to default off unless configured
 * query calls need to be configurable/explicit uri with port/server; deal with xss
-* _**TEST VISUALS SOMEHOW**_
 * Generally go through code TODOs
+* _**TEST VISUALS SOMEHOW**_

@@ -14,6 +14,3 @@ end
 Heimdall.store.register('chef-data-bag-item', "visual 'chef-data-bag-item' do; end")
 Heimdall.store.register('chef-search', "visual 'chef-search' do; end")
 Heimdall.store.register('chef-run-list-item', "visual 'chef-run-list-item' do; end")
-
-# TODO: Role: env_run_lists?
-# TODO: Add stack : breadcrumbs to Chef Viewer

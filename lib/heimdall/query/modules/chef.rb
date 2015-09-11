@@ -2,8 +2,6 @@
 
 require 'ridley'
 
-# TODO: Test this module somehow
-
 # Configuration
 class Heimdall
   class Config
