@@ -1,15 +1,12 @@
 #!/usr/bin/env ruby
 
 require 'bundler/setup'
-# TODO: can move this is we modularize sinatra
-require 'sinatra'
 
-# TODO: we can clean up the includes and the fact we need to do the config first if
-# we modularize sinatra.
+require 'heimdall'
+
 if (ARGV.length > 0)
   CONFIG_FILE = ARGV[0]
 end
 
-# Requiring heimdall starts the sinatra server; yes this is ugly.  Again, modularize
-# Sinatra.
-require 'heimdall'
+Heimdall.start
+

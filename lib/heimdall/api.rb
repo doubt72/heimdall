@@ -1,4 +1,4 @@
-# Configure sinatra query and store REST endpoints
+# Query and store REST endpoints
 
 require 'heimdall/api/action'
 require 'heimdall/api/query'
@@ -6,7 +6,12 @@ require 'heimdall/api/store'
 
 # TODO: add authorization filters; integrate with OCID for security?
 
-# TODO: switch this to modular sinatra?  Not well encapsulated; currently running it
-# in global scope and sinatra require is in the executable itself
-
-# Nothing to do here, the required files set up the endpoints
+class Heimdall
+  class API
+    def self.start
+      Heimdall::API::Action.start
+      Heimdall::API::Query.start
+      Heimdall::API::Store.start
+    end
+  end
+end

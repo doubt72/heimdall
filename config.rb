@@ -1,4 +1,4 @@
-# Empty config file
+# Example config file
 
 chef.server_url 'https://opsmaster.opscode.com/organizations/preprod'
 chef.client_name 'doubt72'

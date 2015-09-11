@@ -1,5 +1,5 @@
 require 'cgi'
-require 'sinatra_spec_helper.rb'
+require 'spec_helper.rb'
 
 def make_full_url(params)
   new_params = {'name' => '', 'script' => '', 'args' => ''}

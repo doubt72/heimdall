@@ -1,7 +1,5 @@
 # Heimdall query interface
 
-# Also handles loading of actions
-
 require 'heimdall/query/interface'
 require 'heimdall/query/loader'
 

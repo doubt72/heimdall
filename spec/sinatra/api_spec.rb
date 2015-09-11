@@ -1,4 +1,4 @@
-require 'sinatra_spec_helper'
+require 'spec_helper'
 
 describe "Heimdall::API" do
   context "simple action API" do
@@ -7,6 +7,11 @@ describe "Heimdall::API" do
     let(:action) { 'true' }
 
     before(:each) do
+      # Clear system/module queries
+      Heimdall.action.interface.list.each do |name|
+        Heimdall.action.interface.delete(name)
+      end
+
       # Register an action for testing
       Heimdall.action.interface.register(name, Proc.new {|code| eval code})
     end
@@ -67,6 +72,11 @@ describe "Heimdall::API" do
     let(:query) { 'true' }
 
     before(:each) do
+      # Clear system/module queries
+      Heimdall.query.interface.list.each do |name|
+        Heimdall.query.interface.delete(name)
+      end
+
       # Register a query for testing
       Heimdall.query.interface.register(name, Proc.new {|code| eval code})
     end
@@ -140,7 +150,7 @@ describe "Heimdall::API" do
     let(:url) { '/store' }
     let(:name_url) { '/store/' + name }
     let(:not_name_url) { '/store/' + not_name }
-    
+
     after(:each) do
       # Clear our named script; ignore 404 if it's not actually there
       delete name_url

@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-# Load the module file like the loader does:
+# Load the module file like the loader does
 load 'lib/heimdall/query/modules/chef.rb'
 
-describe "chef module" do
+describe "Chef module" do
   context "configuration" do
     it "sets up configuration" do
       Heimdall.config.chef.class.should eq(Heimdall::Config::Chef)
