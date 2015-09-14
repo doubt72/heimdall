@@ -1,0 +1,10 @@
+/* CSS for chef visuals */
+
+#spatial-globe-container {
+    padding: 0 0 0 0;
+    margin: 0 0 0 0;
+    width: calc(100% - 1px);
+    height: calc(100% - 1px);
+    background: #EEE;
+    overflow: hidden;
+}

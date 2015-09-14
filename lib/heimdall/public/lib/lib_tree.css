@@ -16,41 +16,41 @@
     display: none;
 }
 
-.node {
+.json-tree-node {
   cursor: pointer;
 }
 
-.overlay{
+.json-tree-overlay {
   background-color: #EEE;
 }
-   
-.node circle {
+
+.json-tree-node circle {
   fill: #FFF;
   stroke: #333;
   stroke-width: 1.5px;
 }
-   
-.node rect {
+
+.json-tree-node rect {
   fill: #FFF;
   stroke: #333;
   stroke-width: 1.5px;
 }
-   
-.node text {
+
+.json-tree-node text {
   font-size: 10px; 
   font-family: sans-serif;
 }
-   
-.link {
+
+.json-tree-link {
   fill: none;
   stroke: #DDD;
   stroke-width: 1.5px;
 }
 
-.code-key { color: #007; }
-.code-string { color: #070; }
-.code-number { color: #700; }
-.code-boolean { color: #077; }
-.code-null { color: #707; }
+.json-tree-code-key { color: #007; }
+.json-tree-code-string { color: #070; }
+.json-tree-code-number { color: #700; }
+.json-tree-code-boolean { color: #077; }
+.json-tree-code-null { color: #707; }
 
-.xcode-selectedx { background: #EEE; }
+.json-tree-xcode-selectedx { background: #DDD; }
