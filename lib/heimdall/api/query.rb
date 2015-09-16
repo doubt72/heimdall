@@ -6,12 +6,14 @@ class Heimdall
       def self.start
         Sinatra::Application.post '/query' do
           data = JSON.parse(request.body.read)
+          puts "-----> #{data}"
           # Any unexpected keys are ignored
           name = data["name"]
           query = data["query"]
           content_type :json
           if (name && query)
             rc = Heimdall.query.interface.execute(name, query)
+            puts "-----< #{rc}"
             if (rc[:return])
               rc.to_json
             elsif (rc[:error] == 'notfound')

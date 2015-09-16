@@ -12,5 +12,5 @@ end
 
 # Special chef items
 Heimdall.store.register('chef-data-bag-item', "visual 'chef-data-bag-item' do; end")
-Heimdall.store.register('chef-search', "visual 'chef-search' do; end")
+Heimdall.store.register('chef-search', "visual 'chef-search' do; show_json; end")
 Heimdall.store.register('chef-run-list-item', "visual 'chef-run-list-item' do; end")

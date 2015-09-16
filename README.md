@@ -250,10 +250,11 @@ interface is the same.
 ## Maintainer
 
 Douglas Triggs [douglas@triggs.org, doug@chef.io] is responsible for Heimdall, the
-Chef query module, and the Chef and JSON Tree visuals.  The base tree visual in the
+Chef query module, and the currently extant visuals.  The base tree visual in the
 library used by them was originally adapted from an example built by Rob Schmuecker
 and available from the [d3js.org](http://d3js.org/) examples (specifically
-[here](http://bl.ocks.org/robschmuecker/7880033)) and very heavily modified.
+[here](http://bl.ocks.org/robschmuecker/7880033)) and very heavily modified.  See
+the included licenses for other libraries in `lib/heimdall/public/lib`.
 
 ## TODO List
 

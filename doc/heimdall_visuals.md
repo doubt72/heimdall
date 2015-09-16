@@ -66,12 +66,26 @@ a given type would be limited to one rendered per page.  If IDs are necessary fo
 some reason, they should probably be by appending to the ID that the visual
 is rendered in to avoid causing issues with repeated IDs.
 
+## More on Debugging Visuals
+
+If the visual needs any dummy data from the server for testing, it can use the
+built-in system debug queries, i.e., `debug-echo` and `debug-random`.  Echo will
+return the value passed to it (which is stored in the standard query `return` key in
+the JSON response body).  Random will (persistently) return values defined by a
+passed stringified JSON object containing the following keys: center, perturb,
+correction, and id.  Center is the "target" that values will tend towards, perturb
+is maximum distance (on each query) that a value will move from the previous value,
+correction is the amount it will move towards the "target" after being perturbed (it
+may overshoot), and id is a persistent identifier so that requests for the same id
+will be cumulative.
+
 ## Included Visuals
 
 Currently there are a number of included visuals, including various tree visuals for
 looking at various Chef server objects and navigating through them, as well as a
 couple of generic tree visuals for working with generic JSON or on the library
-itself.  They can be listed in the debugger by running the debug visual.
+itself (there's also fairly over-the-top spatial globe visual).  They can be listed
+in the debugger by running the debug visual.
 
 Probably the best simple example of a visual is the `json-tree` visual in
 `json_tree.js`; the Chef visuals (since they interact with each other) are much more
@@ -83,3 +97,4 @@ to facilitate navigation between Chef tree visuals.
 The built-in `debug` visual is part of Heimdall itself which will load automatically
 if a visual defined in the DSL doesn't exist, or if there's a syntax error that
 causes the DSL script not to succeed.
+

@@ -102,7 +102,8 @@ describe "Chef module" do
           'chef-resolve-cookbook-version', 'chef-resolve-runlist',
           'chef-role', 'chef-role-list',
           'chef-search',
-          'chef-user', 'chef-user-list'
+          'chef-user', 'chef-user-list',
+          'debug-echo', 'debug-random'
         ]
       }
 
