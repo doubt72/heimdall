@@ -67,5 +67,5 @@ enforce it (nor, in practical terms, can it).
 
 To see an example of a module, see the included Chef module:
 `lib/heimdall/query/modules/chef.rb` which handles connections to a Chef server
-using Ridley and returns various types of Chef objects (as well as parsing run list
+and returns various types of Chef objects (as well as parsing run list
 items and such).

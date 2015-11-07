@@ -16,14 +16,17 @@ describe "Chef module" do
 
   context "module" do
     let(:chef_class) { Heimdall::Query::Modules::Chef }
-    let(:fake_server) { double(Ridley) }
-    let(:fake_cookbook) { double(Object) }
 
     before(:each) do
-      allow(chef_class).to receive(:chef).and_return(fake_server)
-      allow(fake_server).to receive(:cookbook).and_return(fake_cookbook)
-      allow(fake_cookbook).to receive(:latest_version).and_return('2.0.0')
-      allow(fake_cookbook).to receive(:versions).and_return(['1.0.0', '2.0.0', '0.5.0'])
+      allow(chef_class).to receive(:chef_request).with('/cookbooks/name').
+                            and_return({
+                                         "name" =>
+                                         {"versions" => [
+                                            {"version" => '2.0.0'},
+                                            {"version" => '1.0.0'},
+                                            {"version" => '0.5.0'}
+                                          ]}
+                                       })
     end
 
     context "helper functions" do
@@ -71,22 +74,32 @@ describe "Chef module" do
         end
 
         it "resolves '~> version'" do
-          allow(fake_cookbook).to receive(:versions).and_return(['1.0.0', '2.0.0', '0.5.0',
-                                                                 '0.5.1', '0.6.0', '1.5.0',
-                                                                 '1.5.5', '1.0.1'])
+          allow(chef_class).to receive(:chef_request).with('/cookbooks/more').
+                                and_return({
+                                             "more" =>
+                                             {"versions" => [
+                                                {"version" => '2.0.0'},
+                                                {"version" => '1.5.5'},
+                                                {"version" => '1.5.0'},
+                                                {"version" => '1.0.1'},
+                                                {"version" => '1.0.0'},
+                                                {"version" => '0.6.0'},
+                                                {"version" => '0.5.1'},
+                                                {"version" => '0.5.0'}
+                                              ]}
+                                           })
+          chef_class.resolve_cookbook_version('more', '~>1.0.0').should eq('1.0.1')
 
-          chef_class.resolve_cookbook_version('name', '~>1.0.0').should eq('1.0.1')
-
-          chef_class.resolve_cookbook_version('name', '~> 1.0.0').should eq('1.0.1')
-          chef_class.resolve_cookbook_version('name', '~> 1.0').should eq('1.5.5')
-          chef_class.resolve_cookbook_version('name', '~> 1.5.0').should eq('1.5.5')
-          chef_class.resolve_cookbook_version('name', '~> 1.5').should eq('1.5.5')
-          chef_class.resolve_cookbook_version('name', '~> 1.5.5').should eq('1.5.5')
-          chef_class.resolve_cookbook_version('name', '~> 0.5.0').should eq('0.5.1')
-          chef_class.resolve_cookbook_version('name', '~> 0.5').should eq('0.6.0')
-          chef_class.resolve_cookbook_version('name', '~> 0.4.0').should eq(nil)
-          chef_class.resolve_cookbook_version('name', '~> 0.4').should eq('0.6.0')
-          chef_class.resolve_cookbook_version('name', '~> 2.0.1').should eq(nil)
+          chef_class.resolve_cookbook_version('more', '~> 1.0.0').should eq('1.0.1')
+          chef_class.resolve_cookbook_version('more', '~> 1.0').should eq('1.5.5')
+          chef_class.resolve_cookbook_version('more', '~> 1.5.0').should eq('1.5.5')
+          chef_class.resolve_cookbook_version('more', '~> 1.5').should eq('1.5.5')
+          chef_class.resolve_cookbook_version('more', '~> 1.5.5').should eq('1.5.5')
+          chef_class.resolve_cookbook_version('more', '~> 0.5.0').should eq('0.5.1')
+          chef_class.resolve_cookbook_version('more', '~> 0.5').should eq('0.6.0')
+          chef_class.resolve_cookbook_version('more', '~> 0.4.0').should eq(nil)
+          chef_class.resolve_cookbook_version('more', '~> 0.4').should eq('0.6.0')
+          chef_class.resolve_cookbook_version('more', '~> 2.0.1').should eq(nil)
         end
       end
     end
@@ -122,15 +135,13 @@ describe "Chef module" do
 
     context "queries" do
       context "clients" do
-        let(:fake_client) { double(Object) }
-        let(:fake_client_object) { double(Object) }
-        let(:name) { 'i am fake' }
+        let(:name) { 'name' }
 
         before(:each) do
-          allow(fake_server).to receive(:client).and_return(fake_client)
-          allow(fake_client).to receive(:find).with(name).and_return({name: name})
-          allow(fake_client).to receive(:all).and_return([fake_client_object])
-          allow(fake_client_object).to receive(:name).and_return(name)
+          allow(chef_class).to receive(:chef_request).with('/clients').
+                                and_return({name => name})
+          allow(chef_class).to receive(:chef_request).with('/clients/name').
+                                and_return({name: name})
         end
 
         it "lists clients" do
@@ -145,21 +156,27 @@ describe "Chef module" do
       end
 
       context "cookbooks" do
-        let(:name) { 'i am fake' }
+        let(:name) { 'name' }
         let(:version) { '1.0.0' }
         let(:eq_version) { '= 1.0.0' }
         let(:cookbook_name) { name + ':' + version }
         let(:cookbook_eq_name) { name + ':' + eq_version }
 
         before(:each) do
-          allow(fake_cookbook).to receive(:find).with(name, version).
-                                   and_return({name: name})
-          allow(fake_cookbook).to receive(:all).and_return([[name, version]])
+          allow(chef_class).to receive(:chef_request).with('/cookbooks?num_versions=all').
+                                and_return({
+                                             "name" =>
+                                             {"versions" => [
+                                                {"version" => '1.0.0'},
+                                              ]}
+                                           })
+          allow(chef_class).to receive(:chef_request).with('/cookbooks/name/1.0.0').
+                                and_return({name: name})
         end
 
         it "lists cookbooks" do
           Heimdall.query.interface.execute('chef-cookbook-list', '*').
-            should eq({return: {name => version}})
+            should eq({return: {name => [version]}})
         end
 
         it "retrieves a cookbook" do
@@ -175,25 +192,16 @@ describe "Chef module" do
       end
 
       context "data bags" do
-        let(:fake_data_bag) { double(Object) }
-        let(:fake_data_bag_object) { double(Object) }
-        let(:fake_data_bag_item) { double(Object) }
-        let(:fake_data_bag_item_object) { double(Object) }
-        let(:name) { 'i am fake' }
-        let(:id) { 'no yuo' }
+        let(:name) { 'name' }
+        let(:id) { 'id' }
 
         before(:each) do
-          allow(fake_server).to receive(:data_bag).and_return(fake_data_bag)
-          allow(fake_data_bag).to receive(:all).and_return([fake_data_bag_object])
-          allow(fake_data_bag_object).to receive(:name).and_return(name)
-          allow(fake_data_bag).to receive(:find).with(name).
-                                   and_return(fake_data_bag_object)
-          allow(fake_data_bag_object).to receive(:item).and_return(fake_data_bag_item)
-          allow(fake_data_bag_item).to receive(:all).
-                                        and_return([fake_data_bag_item_object])
-          allow(fake_data_bag_item).to receive(:find).with(id).
-                                        and_return({name: name})
-          allow(fake_data_bag_item_object).to receive(:id).and_return(id)
+          allow(chef_class).to receive(:chef_request).with('/data').
+                                and_return({name => name})
+          allow(chef_class).to receive(:chef_request).with('/data/name').
+                                and_return({id => id})
+          allow(chef_class).to receive(:chef_request).with('/data/name/id').
+                                and_return({name: name})
         end
 
         it "lists data bags" do
@@ -213,15 +221,13 @@ describe "Chef module" do
       end
 
       context "environments" do
-        let(:fake_environment) { double(Object) }
-        let(:fake_environment_object) { double(Object) }
-        let(:name) { 'i am fake' }
+        let(:name) { 'name' }
 
         before(:each) do
-          allow(fake_server).to receive(:environment).and_return(fake_environment)
-          allow(fake_environment).to receive(:find).with(name).and_return({name: name})
-          allow(fake_environment).to receive(:all).and_return([fake_environment_object])
-          allow(fake_environment_object).to receive(:name).and_return(name)
+          allow(chef_class).to receive(:chef_request).with('/environments').
+                                and_return({name => name})
+          allow(chef_class).to receive(:chef_request).with('/environments/name').
+                                and_return({name: name})
         end
 
         it "lists environments" do
@@ -236,15 +242,13 @@ describe "Chef module" do
       end
 
       context "nodes" do
-        let(:fake_node) { double(Object) }
-        let(:fake_node_object) { double(Object) }
-        let(:name) { 'i am fake' }
+        let(:name) { 'name' }
 
         before(:each) do
-          allow(fake_server).to receive(:node).and_return(fake_node)
-          allow(fake_node).to receive(:find).with(name).and_return({name: name})
-          allow(fake_node).to receive(:all).and_return([fake_node_object])
-          allow(fake_node_object).to receive(:name).and_return(name)
+          allow(chef_class).to receive(:chef_request).with('/nodes').
+                                and_return({name => name})
+          allow(chef_class).to receive(:chef_request).with('/nodes/name').
+                                and_return({name: name})
         end
 
         it "lists nodes" do
@@ -259,15 +263,13 @@ describe "Chef module" do
       end
 
       context "roles" do
-        let(:fake_role) { double(Object) }
-        let(:fake_role_object) { double(Object) }
-        let(:name) { 'i am fake' }
+        let(:name) { 'name' }
 
         before(:each) do
-          allow(fake_server).to receive(:role).and_return(fake_role)
-          allow(fake_role).to receive(:find).with(name).and_return({name: name})
-          allow(fake_role).to receive(:all).and_return([fake_role_object])
-          allow(fake_role_object).to receive(:name).and_return(name)
+          allow(chef_class).to receive(:chef_request).with('/roles').
+                                and_return({name => name})
+          allow(chef_class).to receive(:chef_request).with('/roles/name').
+                                and_return({name: name})
         end
 
         it "lists roles" do
@@ -282,21 +284,13 @@ describe "Chef module" do
       end
 
       context "users" do
-        let(:fake_user) { double(Object) }
-        let(:fake_user_object) { double(Object) }
-        let(:fake_user_name_object) { double(Object) }
-        let(:fake_user_user_object) { double(Object) }
-        let(:name) { 'i am fake' }
+        let(:name) { 'name' }
 
         before(:each) do
-          allow(fake_server).to receive(:user).and_return(fake_user)
-          allow(fake_user).to receive(:find).with(name).and_return({name: name})
-          allow(fake_user).to receive(:all).and_return([fake_user_object])
-
-          # This is o_O, WTF Ridley, IDEK
-          allow(fake_user_object).to receive(:name).and_return(fake_user_name_object)
-          allow(fake_user_name_object).to receive(:user).and_return(fake_user_user_object)
-          allow(fake_user_user_object).to receive(:username).and_return(name)
+          allow(chef_class).to receive(:chef_request).with('/users').
+                                and_return([{'user' => {'username' => name}}])
+          allow(chef_class).to receive(:chef_request).with('/users/name').
+                                and_return({name: name})
         end
 
         it "lists users" do
@@ -314,13 +308,12 @@ describe "Chef module" do
         context "with results" do
           ['client', 'environment', 'node', 'role'].each do |index|
             context index + 's' do
-              let(:fake_object) { double(Object) }
-
               let(:name) { index }
 
               before(:each) do
-                allow(fake_server).to receive(:search).and_return([fake_object])
-                allow(fake_object).to receive(:name).and_return(name)
+                allow(chef_class).to receive(:chef_request).
+                                      with("/search/#{index}?q=name:foo").
+                                      and_return({'rows' => [{'name' => name}]})
               end
 
               it 'returns a result' do
@@ -335,10 +328,6 @@ describe "Chef module" do
         end
 
         context "with no results" do
-          before(:each) do
-            allow(fake_server).to receive(:search).and_return([])
-          end
-
           it 'handles no result' do
             Heimdall.query.interface.execute('chef-search', 'client:name:foo').
               should eq({return: {query: 'client:name:foo',
@@ -347,17 +336,22 @@ describe "Chef module" do
                                   results: 'no results returned for query'}})
           end
         end
-
-        it 'handles bad index' do
-          Heimdall.query.interface.execute('chef-search', 'bogus:name:foo').
-            should eq({return: {query: 'bogus:name:foo',
-                                index: 'unsupported index',
-                                search: 'name:foo',
-                                results: 'no results returned for query'}})
-        end
       end
 
       context "resolve run list" do
+        let(:name) { 'cookbook_name' }
+
+        before(:each) do
+          allow(chef_class).to receive(:chef_request).with("/cookbooks/#{name}").
+                                and_return({
+                                             name =>
+                                             {"versions" => [
+                                                {"version" => '2.0.0'},
+                                                {"version" => '1.0.0'}
+                                              ]}
+                                           })
+        end
+
         it "retrieves a role" do
           Heimdall.query.interface.execute('chef-resolve-runlist', 'role[role_name]').
             should eq({return: {script: 'chef-role',
@@ -366,17 +360,17 @@ describe "Chef module" do
 
         it "retrieves a cookbook (default)" do
           Heimdall.query.interface.execute('chef-resolve-runlist',
-                                           'recipe[cookbook_name]').
+                                           "recipe[#{name}]").
             should eq({return: {script: 'chef-cookbook',
-                                args: {list_id: 'cookbook_name',
+                                args: {list_id: name,
                                        name: '2.0.0'}}})
         end
 
         it "retrieves a cookbook for a recipe" do
           Heimdall.query.interface.execute('chef-resolve-runlist',
-                                           'recipe[cookbook_name::recipe]').
+                                           "recipe[#{name}::recipe]").
             should eq({return: {script: 'chef-cookbook',
-                                args: {list_id: 'cookbook_name',
+                                args: {list_id: name,
                                        name: '2.0.0'}}})
         end
       end

@@ -2,7 +2,8 @@
 #
 # Author: Douglas Triggs (douglas@triggs.org)
 
-require 'ridley'
+require 'chef/http'
+require 'chef/http/authenticator'
 
 # Configuration
 class Heimdall
@@ -32,18 +33,17 @@ class Heimdall
   class Query
     class Modules
       class Chef
-        def self.chef
-          # No idea why I have to do this, but it...  Loses threads or something
-          # TODO: fix this properly
-          Celluloid.shutdown
-          Celluloid.boot
-          # TODO: handle SSL properly
-          Ridley.new(
-            server_url: Heimdall.config.chef.server_url,
-            client_name: Heimdall.config.chef.client_name,
-            client_key: Heimdall.config.chef.client_key,
-            ssl: {verify: false}
-          )
+        class ServerAPI < ::Chef::HTTP
+          def initialize(options = {})
+            options[:client_name] = Heimdall.config.chef.client_name
+            options[:signing_key_filename] = Heimdall.config.chef.client_key
+            super(Heimdall.config.chef.server_url, options)
+          end
+          use ::Chef::HTTP::Authenticator
+        end
+
+        def self.latest_cookbook_version(name)
+          chef_request("/cookbooks/#{name}")[name]['versions'][0]['version']
         end
 
         # TODO: error handling?
@@ -62,7 +62,7 @@ class Heimdall
           else
             return condition
           end
-          latest = chef.cookbook.latest_version(name)
+          latest = latest_cookbook_version(name)
           if (comparison == '=')
             return version
           elsif (comparison == '>')
@@ -79,7 +79,8 @@ class Heimdall
             end
           elsif (comparison == '<' || comparison == '<=' || comparison == '~>')
             latest = nil
-            cookbooks = chef.cookbook.versions(name)
+            cookbooks = chef_request("/cookbooks/#{name}")[name]['versions'].map {|v|
+              v['version']}
             cookbooks.each do |cv|
               if (Gem::Dependency.new('', condition).match?('', cv))
                 if (!latest || Gem::Version.new(cv) > Gem::Version.new(latest))
@@ -91,31 +92,39 @@ class Heimdall
           end
         end
 
+        def self.chef_request(url)
+          data = false
+          headers = {'Content-Type' => 'application/json',
+                     'Accept' => 'application/json'}
+
+          chef_rest = ServerAPI.new(:raw_output => true)
+          result = JSON.parse(chef_rest.request(:GET, url, headers, data))
+        end
+
         def self.start
           # Chef objects
           Heimdall.query.interface.register(
             'chef-client',
-            Proc.new {|name| chef.client.find(name).to_hash}
+            Proc.new {|name| chef_request("/clients/#{name}")}
           )
           Heimdall.query.interface.register(
             'chef-client-list',
-            Proc.new {|x| {all: chef.client.all.map {|client| client.name}}}
+            Proc.new {|x| {all: chef_request('/clients').keys} }
           )
 
           Heimdall.query.interface.register(
             'chef-cookbook',
             Proc.new {|cookbook|
               name, version = cookbook.split(':')
-              rc = chef.cookbook.find(name, version)
-              rc ? rc.to_hash : nil
+              chef_request("/cookbooks/#{name}/#{version}")
             }
           )
           Heimdall.query.interface.register(
             'chef-cookbook-list',
             Proc.new {|x|
               rc = {}
-              chef.cookbook.all.each do |cookbook|
-                rc[cookbook[0]] = cookbook[1]
+              chef_request('/cookbooks?num_versions=all').each do |cookbook|
+                rc[cookbook[0]] = cookbook[1]['versions'].map {|v| v['version']}
               end
               rc
             }
@@ -132,13 +141,9 @@ class Heimdall
           Heimdall.query.interface.register(
             'chef-data-bag',
             Proc.new {|name|
-              rc = []
-              bag = chef.data_bag.find(name)
+              bag = chef_request("/data/#{name}")
               if (bag)
-                items = bag.item.all.each do |item|
-                  rc.push(item.id)
-                end
-                {items: rc}
+                {items: bag.keys}
               else
                 nil
               end
@@ -148,56 +153,48 @@ class Heimdall
             'chef-data-bag-item',
             Proc.new {|data_bag_item|
               bag_name, item_name = data_bag_item.split(':')
-              rc = {}
-              bag = chef.data_bag.find(bag_name)
-              if (bag)
-                item = bag.item.find(item_name)
-                item ? item.to_hash : nil
-              else
-                nil
-              end
+              chef_request("/data/#{bag_name}/#{item_name}")
             }
           )
           Heimdall.query.interface.register(
             'chef-data-bag-list',
-            Proc.new {|x| {all: chef.data_bag.all.map {|obj| obj.name}}}
+            Proc.new {|x| {all: chef_request('/data').keys}}
           )
           
           Heimdall.query.interface.register(
             'chef-environment',
-            Proc.new {|name| chef.environment.find(name).to_hash}
+            Proc.new {|name| chef_request("/environments/#{name}")}
           )
           Heimdall.query.interface.register(
             'chef-environment-list',
-            Proc.new {|x| {all: chef.environment.all.map {|env| env.name}}}
+            Proc.new {|x| {all: chef_request('/environments').keys}}
           )
 
           Heimdall.query.interface.register(
             'chef-node',
-            Proc.new {|name| chef.node.find(name).to_hash}
+            Proc.new {|name| chef_request("/nodes/#{name}")}
           )
           Heimdall.query.interface.register(
             'chef-node-list',
-            Proc.new {|x| {all: chef.node.all.map {|node| node.name}}}
+            Proc.new {|x| {all: chef_request('/nodes').keys}}
           )
 
           Heimdall.query.interface.register(
             'chef-role',
-            Proc.new {|name| chef.role.find(name).to_hash}
+            Proc.new {|name| chef_request("/roles/#{name}")}
           )
           Heimdall.query.interface.register(
             'chef-role-list',
-            Proc.new {|x| {all: chef.role.all.map {|role| role.name}}}
+            Proc.new {|x| {all: chef_request('/roles').keys}}
           )
 
           Heimdall.query.interface.register(
             'chef-user',
-            Proc.new {|name| chef.user.find(name).to_hash}
+            Proc.new {|name| chef_request("/users/#{name}")}
           )
-          # WTF is that call stack o_O
           Heimdall.query.interface.register(
             'chef-user-list',
-            Proc.new {|x| {all: chef.user.all.map {|user| user.name.user.username}}}
+            Proc.new {|x| {all: chef_request('/users').map {|u| u['user']['username']}}}
           )
 
           # Search
@@ -209,32 +206,25 @@ class Heimdall
               index = list[0]
               rc = []
               begin
-                case index
-                when 'client'
-                  rc = chef.search(:client, search)
-                when 'environment'
-                  rc = chef.search(:environment, search)
-                when 'node'
-                  rc = chef.search(:node, search)
-                when 'role'
-                  rc = chef.search(:role, search)
-                else
-                  index = 'unsupported index'
-                end
+                rc = chef_request("/search/#{index}?q=#{search}")
               rescue Exception => e
                 puts "Error executing chef-search-query: #{e.message}"
                 # Got a bad search query
               end
-
               if (rc.length == 0)
                 {query: query, index: index, search: search,
                  results: 'no results returned for query'}
               else
                 {query: query, index: index, search: search,
-                 index + 's' => rc.map {|item| item.name}}
+                 index + 's' => rc['rows'].map {|item| item['name']}}
               end
             }
           )
+
+          # TODO: additional endpoints?
+          # Top level: license, organizations? (though same problem as users?)
+          # Org level: association_requests, containers, cookbook recipes, env stuff,
+          #   groups, policies/groups, sandboxes, status?
 
           # Resolve runlist items
           Heimdall.query.interface.register(
@@ -248,7 +238,7 @@ class Heimdall
               elsif (item =~ /^recipe/)
                 cookbook = item.gsub(/^recipe\[/, '').gsub(/\]$/, '')
                 cookbook = cookbook.gsub(/::.*/, '')
-                version = chef.cookbook.latest_version(cookbook)
+                version = latest_cookbook_version(cookbook)
                 {
                   script: 'chef-cookbook',
                   args: {list_id: cookbook, name: version}}
