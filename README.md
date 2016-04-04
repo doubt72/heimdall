@@ -4,6 +4,12 @@ Heimdall is a extensible/configurable visualization engine that combines a Ruby 
 with Javascript visual widgets ("visuals") created for visualizing things like Chef
 Server data.  _This documentation is a work-in-progress._
 
+Some screenshots of running instances are available here:
+
+[Chef JSON Viewer](doc/screenshot01.png)
+
+[Globe Visualization Example](doc/screenshot02.png)
+
 ## Running Heimdall
 
 Before running Heimdall, cd to the Heimdall top directory and run:
